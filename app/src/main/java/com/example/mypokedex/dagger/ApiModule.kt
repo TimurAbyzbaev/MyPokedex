@@ -2,6 +2,8 @@ package com.example.mypokedex.dagger
 
 import com.example.mypokedex.App
 import com.example.mypokedex.mvp.model.api.IDataSource
+import com.example.mypokedex.mvp.network.AndroidNetworkStatus
+import com.example.mypokedex.mvp.network.INetworkStatus
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
