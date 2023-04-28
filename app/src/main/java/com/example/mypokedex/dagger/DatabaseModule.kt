@@ -2,6 +2,7 @@ package com.example.mypokedex.dagger
 
 import androidx.room.Room
 import com.example.mypokedex.App
+import com.example.mypokedex.mvp.model.repo.room.Database
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -10,5 +11,6 @@ import javax.inject.Singleton
 class DatabaseModule {
     @Singleton
     @Provides
-    fun database(app: App) : Database = Room.databaseBuilder(app, Database::class.java, Database.DB_NAME).build
+    fun database(app: App): Database =
+        Room.databaseBuilder(app, Database::class.java, Database.DB_NAME).build()
 }
