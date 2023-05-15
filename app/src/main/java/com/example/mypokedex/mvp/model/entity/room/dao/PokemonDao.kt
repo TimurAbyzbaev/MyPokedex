@@ -1,7 +1,6 @@
 package com.example.mypokedex.mvp.model.entity.room.dao
 
 import androidx.room.*
-import com.example.mypokedex.mvp.model.entity.Pokemon
 
 @Dao
 interface PokemonDao {

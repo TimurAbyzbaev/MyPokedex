@@ -1,10 +1,10 @@
 package com.example.mypokedex.navigation
 
-import com.example.mypokedex.mvp.model.entity.Pokemon
+import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.github.terrakok.cicerone.Screen
 
 interface IScreens {
     fun pokemons(): Screen
-    fun pokemon(pokemon: Pokemon): Screen
+    fun pokemon(pokemonFromResponse: PokemonFromResponse): Screen
 
 }

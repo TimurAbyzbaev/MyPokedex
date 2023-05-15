@@ -6,5 +6,5 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PokemonsList(
-    @Expose val result: List<Pokemon>? = null
+    @Expose val result: List<PokemonFromResponse>? = null
 ) : Parcelable

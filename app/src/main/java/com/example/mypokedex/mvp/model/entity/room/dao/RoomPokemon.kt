@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 
 @Entity
 class RoomPokemon(
-    @PrimaryKey var gameIndex: Int,
+    @PrimaryKey var gameIndex: String,
     var name: String,
     @Expose val height: Double? = null,
     @Expose val weigth: Double? = null,

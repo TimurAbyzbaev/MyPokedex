@@ -4,17 +4,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mypokedex.dagger.ApiModule
 import com.example.mypokedex.dagger.ImageLoadModule
 import com.example.mypokedex.databinding.ListPokemonsBinding
 import com.example.mypokedex.image.IImageLoader
+import com.example.mypokedex.mvp.model.api.IDataSource
+import com.example.mypokedex.mvp.model.repo.IPokemonsRepo
 import com.example.mypokedex.mvp.presenter.list.IPokemonsListPresenter
 import com.example.mypokedex.mvp.view.list.PokemonItemView
+import javax.inject.Inject
 
 class PokemonsRVAdapter(
     val presenter: IPokemonsListPresenter,
     val imageLoader: IImageLoader<ImageView>
 ) : RecyclerView.Adapter<PokemonsRVAdapter.ViewHolder>() {
 
+    @Inject
+    lateinit var pokemonsRepo: IPokemonsRepo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(
             ListPokemonsBinding.inflate(
@@ -38,6 +44,8 @@ class PokemonsRVAdapter(
         }
 
         override fun loadAvatar(url: String) = with(vb) {
+
+
             imageLoader.loadInto(url, vb.ivAvatar)
         }
 

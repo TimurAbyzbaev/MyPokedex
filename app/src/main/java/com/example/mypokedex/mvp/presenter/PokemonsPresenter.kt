@@ -2,7 +2,7 @@ package com.example.mypokedex.mvp.presenter
 
 import android.annotation.SuppressLint
 import com.example.mypokedex.dagger.pokemon.IPokemonScopeContainer
-import com.example.mypokedex.mvp.model.entity.Pokemon
+import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.example.mypokedex.mvp.model.repo.IPokemonsRepo
 import com.example.mypokedex.mvp.presenter.list.IPokemonsListPresenter
 import com.example.mypokedex.mvp.view.PokemonsView
@@ -30,13 +30,13 @@ class PokemonsPresenter(
     lateinit var pokemonScopeContainer: IPokemonScopeContainer
 
     class PokemonsListPresenter : IPokemonsListPresenter {
-        val pokemons = mutableListOf<Pokemon>()
+        val pokemons = mutableListOf<PokemonFromResponse>()
         override var itemClickListener: ((PokemonItemView) -> Unit)? = null
         override fun getCount(): Int = pokemons.size
         override fun bindView(view: PokemonsRVAdapter.ViewHolder) {
             val pokemon = pokemons[view.pos]
             pokemon.name?.let { view.setPokemonName(it) }
-            pokemon.frontDefault?.let { view.loadAvatar(it) }
+            //pokemon.frontDefault?.let { view.loadAvatar(it) }
         }
     }
 
@@ -59,7 +59,7 @@ class PokemonsPresenter(
             .observeOn(uiScheduler)
             .subscribe({ repos ->
                 pokemonsListPresenter.pokemons.clear()
-                pokemonsListPresenter.pokemons.addAll(repos)
+                pokemonsListPresenter.pokemons.addAll(repos.results)
                 viewState.updateList()
             }, {
                 println(it.message)

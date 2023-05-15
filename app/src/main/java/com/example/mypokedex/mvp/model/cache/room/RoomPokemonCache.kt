@@ -1,7 +1,7 @@
 package com.example.mypokedex.mvp.model.cache.room
 
 import com.example.mypokedex.mvp.model.cache.IPokemonCache
-import com.example.mypokedex.mvp.model.entity.Pokemon
+import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.example.mypokedex.mvp.model.entity.room.dao.RoomPokemon
 import com.example.mypokedex.mvp.model.repo.room.Database
 import io.reactivex.rxjava3.core.Completable
@@ -9,27 +9,21 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class RoomPokemonCache(private val db: Database) : IPokemonCache {
-    override fun getPokemons(): Single<List<Pokemon>> =
+    override fun getPokemons(): Single<List<PokemonFromResponse>> =
         Single.fromCallable {
             db.pokemonDao.getAll().map { roomPokemon ->
-                Pokemon(
-                    roomPokemon.gameIndex,
-                    roomPokemon.name,
-                    roomPokemon.height,
-                    roomPokemon.weigth,
-                    roomPokemon.frontDefault
+                PokemonFromResponse(
+                    //roomPokemon.url,
+                    roomPokemon.name
                 )
             }
         }
 
-    override fun putPokemons(pokemons: List<Pokemon>): Completable = Completable.fromAction{
+    override fun putPokemons(pokemons: List<PokemonFromResponse>): Completable = Completable.fromAction{
         val roomPokemons = pokemons.map { pokemon ->
             RoomPokemon(
-                pokemon.gameIndex ?: 0,
                 pokemon.name ?: "",
-                pokemon.height ?: 0.0,
-                pokemon.weigth ?: 0.0,
-                pokemon.frontDefault ?: "",
+                pokemon.url ?: "",
             )
         }
         db.pokemonDao.insert(roomPokemons)

@@ -3,31 +3,38 @@ package com.example.mypokedex.mvp.model.repo.retrofit
 import com.example.mypokedex.mvp.model.api.IDataSource
 import com.example.mypokedex.mvp.model.cache.IPokemonCache
 import com.example.mypokedex.mvp.model.entity.Pokemon
+import com.example.mypokedex.mvp.model.entity.ResponsePokemonsList
 import com.example.mypokedex.mvp.model.repo.IPokemonsRepo
 import com.example.mypokedex.mvp.network.INetworkStatus
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class RetrofitPokemonsRepo(
     private val api: IDataSource,
     private val networkStatus: INetworkStatus,
     private val cache: IPokemonCache
 ) : IPokemonsRepo {
-    override fun getPokemons(): Single<List<Pokemon>> =
-        networkStatus.isOnlineSingle().flatMap { isOnline ->
-            if (isOnline) {
-                api.getPokemons().let {
-                    it.flatMap { pokemons ->
-                        cache.putPokemons(pokemons).toSingleDefault(pokemons)
-                    }
+    override fun getPokemons(): Single<ResponsePokemonsList> =
+        api.getPokemons()
 
-                }.also {
-                    var poceList = it
+    override fun getPokemon(url: String): Single<Pokemon> =
+        api.getPokemon(url)
+
+
+    /*networkStatus.isOnlineSingle().flatMap { isOnline ->
+        if (isOnline) {
+            api.getPokemons().let {
+                it.flatMap { pokemons ->
+                    cache.putPokemons(pokemons).toSingleDefault(pokemons)
                 }
 
-            } else {
-                cache.getPokemons()
-            }.subscribeOn(Schedulers.io())
-        }
+            }.also {
+                var poceList = it
+            }
+
+        } else {
+            //cache.getPokemons()
+            println("error")
+        }.subscribeOn(Schedulers.io())
+    }*/
 
 }
