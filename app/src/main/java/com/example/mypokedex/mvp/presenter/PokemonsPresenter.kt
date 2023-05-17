@@ -36,7 +36,8 @@ class PokemonsPresenter(
         override fun bindView(view: PokemonsRVAdapter.ViewHolder) {
             val pokemon = pokemons[view.pos]
             pokemon.name?.let { view.setPokemonName(it) }
-            //pokemon.frontDefault?.let { view.loadAvatar(it) }
+            pokemon.imageUrl?.let{ view.loadAvatar(pokemon)}
+
         }
     }
 
@@ -61,9 +62,32 @@ class PokemonsPresenter(
                 pokemonsListPresenter.pokemons.clear()
                 pokemonsListPresenter.pokemons.addAll(repos.results)
                 viewState.updateList()
+                loadPokemonImages()
+                println("End loading sprites")
             }, {
                 println(it.message)
             })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadPokemonImages() {
+        pokemonsListPresenter.pokemons.forEach { pokemon ->
+            pokemon.url?.let { pokemonUrl ->
+                pokemonsRepo.getPokemon(pokemonUrl)
+                    .observeOn(uiScheduler)
+                    .subscribe({ pokemonResponse ->
+                        val sprites = pokemonResponse.sprites
+                        if (sprites != null) {
+                            val imageUrl = sprites.front_default
+                            println("pokemon " + pokemon.name + " " + imageUrl)
+                            pokemon.imageUrl = imageUrl
+                            viewState.updatePokemonImage()
+                        }
+                    }, {
+                        println(it.message)
+                    })
+            }
+        }
     }
 
     fun backPressed(): Boolean {

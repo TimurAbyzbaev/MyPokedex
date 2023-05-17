@@ -11,5 +11,6 @@ interface IDataSource {
     @GET("pokemon")
     fun getPokemons(): Single<ResponsePokemonsList>
 
+    @GET
     fun getPokemon(@Url url: String): Single<Pokemon>
 }

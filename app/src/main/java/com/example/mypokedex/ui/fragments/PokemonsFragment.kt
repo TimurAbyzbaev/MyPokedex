@@ -9,6 +9,7 @@ import com.example.mypokedex.App
 import com.example.mypokedex.dagger.pokemon.PokemonSubcomponent
 import com.example.mypokedex.databinding.FragmentPokemonsBinding
 import com.example.mypokedex.image.GlideImageLoader
+import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.example.mypokedex.mvp.presenter.PokemonsPresenter
 import com.example.mypokedex.mvp.view.PokemonsView
 import com.example.mypokedex.ui.activity.BackButtonListener
@@ -58,5 +59,9 @@ class PokemonsFragment: MvpAppCompatFragment(), PokemonsView, BackButtonListener
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun updatePokemonImage() {
+        updateList()
     }
 }
