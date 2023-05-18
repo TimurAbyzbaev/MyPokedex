@@ -82,11 +82,15 @@ class PokemonsPresenter(
                     .observeOn(uiScheduler)
                     .subscribe({ pokemonResponse ->
                         val sprites = pokemonResponse.sprites
+                        val species = pokemonResponse.species
                         if (sprites != null) {
-                            val imageUrl = sprites.front_default
+                            val imageUrl = sprites.frontDefault
                             println("pokemon " + pokemon.name + " " + imageUrl)
                             pokemon.imageUrl = imageUrl
                             viewState.setAvatar()
+                        }
+                        if( species != null ){
+                            pokemon.speciesUrl = species.url
                         }
                     }, {
                         println(it.message)

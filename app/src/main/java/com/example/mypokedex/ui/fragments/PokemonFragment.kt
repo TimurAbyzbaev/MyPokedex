@@ -14,6 +14,7 @@ import com.example.mypokedex.mvp.presenter.PokemonPresenter
 import com.example.mypokedex.mvp.view.PokemonsView
 import com.example.mypokedex.ui.activity.BackButtonListener
 import com.example.mypokedex.ui.adapters.PokemonRVAdapter
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -31,7 +32,7 @@ class PokemonFragment: MvpAppCompatFragment(), PokemonsView, BackButtonListener 
     val presenter: PokemonPresenter by moxyPresenter {
         val pokemon = arguments?.getParcelable<PokemonFromResponse>(POKEMON_ARG) as PokemonFromResponse
 
-        PokemonPresenter(pokemon).apply {
+        PokemonPresenter(pokemon, AndroidSchedulers.mainThread()).apply {
             App.instance.initPokemonSubcomponent().inject(this)
         }
     }
@@ -78,6 +79,10 @@ class PokemonFragment: MvpAppCompatFragment(), PokemonsView, BackButtonListener 
 
     override fun setName(pokemonFromResponse: PokemonFromResponse) {
         binding.textViewName.text = pokemonFromResponse.name
+    }
+
+    override fun setPokemonSpecies(pokemonSpecies: String?) {
+        binding.tvDescription.text = pokemonSpecies
     }
 
 

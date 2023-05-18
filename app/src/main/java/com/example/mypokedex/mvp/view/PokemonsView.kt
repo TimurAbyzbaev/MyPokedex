@@ -15,5 +15,6 @@ interface PokemonsView : MvpView {
     fun setAvatar()
 
     fun setName(pokemonFromResponse: PokemonFromResponse)
+    fun setPokemonSpecies(pokemonSpecies: String?)
 
 }

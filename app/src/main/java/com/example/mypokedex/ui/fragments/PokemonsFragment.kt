@@ -68,11 +68,15 @@ class PokemonsFragment: MvpAppCompatFragment(), PokemonsView, BackButtonListener
     }
 
     override fun setAvatar() {
-
+        updateList()
     }
 
     override fun setName(pokemonFromResponse: PokemonFromResponse) {
-        //
+        updateList()
+    }
+
+    override fun setPokemonSpecies(pokemonSpecies: String?) {
+        updateList()
     }
 
 }

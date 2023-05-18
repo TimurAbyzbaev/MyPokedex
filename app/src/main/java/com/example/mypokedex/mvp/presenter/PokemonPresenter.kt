@@ -18,7 +18,8 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 
 class PokemonPresenter(
-    private val pokemon: PokemonFromResponse
+    private val pokemon: PokemonFromResponse,
+    private val uiScheduler: Scheduler
 ) : MvpPresenter<PokemonsView>() {
     @Inject
     lateinit var pokemonsRepo: IPokemonsRepo
@@ -56,13 +57,30 @@ class PokemonPresenter(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-
+        loadPokemonDescription()
         pokemon.imageUrl.let {
             if (it != null) {
                 viewState.setAvatar(imageLoader, it)
             }
         }
         pokemon.let { viewState.setName(it) }
+    }
+    @SuppressLint("CheckResult")
+    private fun loadPokemonDescription(){
+        pokemon.speciesUrl?.let {
+            pokemonsRepo.getPokemonSpecies(it)
+                .observeOn(uiScheduler)
+                .subscribe({ speciesResponse ->
+                    val species = speciesResponse.flavorTextEntries
+                    if(species != null){
+                        val pokemonSpecies = species[0].flavorText
+                        println(pokemon.name + " descr: " + pokemonSpecies)
+                        viewState.setPokemonSpecies(pokemonSpecies)
+                    }
+                }, {
+                    println(it.message)
+                })
+        }
     }
 
     fun backPressed(): Boolean {
