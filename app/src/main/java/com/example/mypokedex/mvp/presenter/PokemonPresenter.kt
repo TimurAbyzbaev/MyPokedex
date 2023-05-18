@@ -1,7 +1,9 @@
 package com.example.mypokedex.mvp.presenter
 
 import android.annotation.SuppressLint
+import android.widget.ImageView
 import com.example.mypokedex.dagger.pokemon.IPokemonScopeContainer
+import com.example.mypokedex.image.IImageLoader
 import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.example.mypokedex.mvp.model.repo.IPokemonsRepo
 import com.example.mypokedex.mvp.presenter.list.IPokemonsListPresenter
@@ -15,8 +17,8 @@ import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
 import javax.inject.Inject
 
-class PokemonsPresenter(
-    private val uiScheduler: Scheduler
+class PokemonPresenter(
+    private val pokemon: PokemonFromResponse
 ) : MvpPresenter<PokemonsView>() {
     @Inject
     lateinit var pokemonsRepo: IPokemonsRepo
@@ -30,19 +32,22 @@ class PokemonsPresenter(
     @Inject
     lateinit var pokemonScopeContainer: IPokemonScopeContainer
 
+    @Inject
+    lateinit var imageLoader: IImageLoader<ImageView>
+
     class PokemonsListPresenter : IPokemonsListPresenter {
         val pokemons = mutableListOf<PokemonFromResponse>()
         override var itemClickListener: ((PokemonItemView) -> Unit)? = null
         override fun getCount(): Int = pokemons.size
         override fun bindView(view: PokemonsRVAdapter.ViewHolder) {
-            val pokemon = pokemons[view.pos]
-            pokemon.name?.let { view.setPokemonName(it) }
-            pokemon.imageUrl?.let{ view.loadAvatar(pokemon)}
+
 
         }
 
         override fun bindView(view: PokemonRVAdapter.ViewHolder) {
-            TODO("Not yet implemented")
+            val pokemon = pokemons[view.pos]
+            pokemon.name?.let { view.setPokemonName(it) }
+            pokemon.imageUrl?.let{ view.loadAvatar(pokemon)}
         }
     }
 
@@ -51,48 +56,13 @@ class PokemonsPresenter(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
 
-        pokemonsListPresenter.itemClickListener = { itemView ->
-            val pokemon = pokemonsListPresenter.pokemons[itemView.pos]
-            router.navigateTo(screens.pokemon(pokemon))
-        }
-    }
-
-    @SuppressLint("CheckResult")
-    private fun loadData() {
-        pokemonsRepo.getPokemons()
-            .observeOn(uiScheduler)
-            .subscribe({ repos ->
-                pokemonsListPresenter.pokemons.clear()
-                pokemonsListPresenter.pokemons.addAll(repos.results)
-                viewState.updateList()
-                loadPokemonImages()
-                println("End loading sprites")
-            }, {
-                println(it.message)
-            })
-    }
-
-    @SuppressLint("CheckResult")
-    private fun loadPokemonImages() {
-        pokemonsListPresenter.pokemons.forEach { pokemon ->
-            pokemon.url?.let { pokemonUrl ->
-                pokemonsRepo.getPokemon(pokemonUrl)
-                    .observeOn(uiScheduler)
-                    .subscribe({ pokemonResponse ->
-                        val sprites = pokemonResponse.sprites
-                        if (sprites != null) {
-                            val imageUrl = sprites.front_default
-                            println("pokemon " + pokemon.name + " " + imageUrl)
-                            pokemon.imageUrl = imageUrl
-                            viewState.setAvatar()
-                        }
-                    }, {
-                        println(it.message)
-                    })
+        pokemon.imageUrl.let {
+            if (it != null) {
+                viewState.setAvatar(imageLoader, it)
             }
         }
+        pokemon.let { viewState.setName(it) }
     }
 
     fun backPressed(): Boolean {

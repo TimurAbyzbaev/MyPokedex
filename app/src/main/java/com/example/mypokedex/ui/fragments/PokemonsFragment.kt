@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mypokedex.App
 import com.example.mypokedex.dagger.pokemon.PokemonSubcomponent
 import com.example.mypokedex.databinding.FragmentPokemonsBinding
 import com.example.mypokedex.image.GlideImageLoader
+import com.example.mypokedex.image.IImageLoader
 import com.example.mypokedex.mvp.model.entity.PokemonFromResponse
 import com.example.mypokedex.mvp.presenter.PokemonsPresenter
 import com.example.mypokedex.mvp.view.PokemonsView
@@ -61,7 +63,16 @@ class PokemonsFragment: MvpAppCompatFragment(), PokemonsView, BackButtonListener
         adapter?.notifyDataSetChanged()
     }
 
-    override fun updatePokemonImage() {
+    override fun setAvatar(imageLoader: IImageLoader<ImageView>, url: String) {
         updateList()
     }
+
+    override fun setAvatar() {
+
+    }
+
+    override fun setName(pokemonFromResponse: PokemonFromResponse) {
+        //
+    }
+
 }
